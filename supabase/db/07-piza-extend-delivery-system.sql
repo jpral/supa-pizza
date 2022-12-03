@@ -72,3 +72,75 @@ CREATE CONSTRAINT TRIGGER tr_on_new_order AFTER INSERT ON
   EXECUTE FUNCTION public.fn_process_order();
 
 COMMENT ON TRIGGER tr_on_new_order ON public.order IS 'Used for attempting to fulfill a new order as it is added to public.order';
+
+-- Enable realtime for public.order table.
+ALTER PUBLICATION supabase_realtime ADD TABLE public.order;
+
+/* FUNCTIONS to feed the frontend components. */
+
+CREATE OR REPLACE FUNCTION public.fn_get_ratio_success_deliveries(seconds INT)
+  RETURNS TABLE(delivery_status public.delivery_status, percent DECIMAL)
+  LANGUAGE plpgsql
+AS $function$
+  BEGIN
+  RETURN QUERY
+    SELECT delivery_status, round(count(created_at) * 100 / sum(count(*)) OVER (), 2) AS percent
+    FROM public.order
+    WHERE created_at > CURRENT_TIMESTAMP - CONCAT(seconds, ' seconds')::INTERVAL AND delivery_status IS NOT NULL
+    GROUP BY delivery_status;
+  END
+$function$;
+
+COMMENT ON FUNCTION public.fn_get_ratio_success_deliveries IS 'Retrieves the percentage of successful and failed deliveries in the last n-seconds';
+
+CREATE OR REPLACE FUNCTION public.fn_get_best_customer(seconds INT)
+  RETURNS TABLE(name TEXT, surname TEXT, client_id INT, count BIGINT)
+  LANGUAGE plpgsql
+AS $function$
+  BEGIN
+  RETURN QUERY
+    SELECT DISTINCT c.name, c.surname, o.client_id, count(o.client_id) OVER (PARTITION BY o.client_id)
+    FROM public.order o 
+    LEFT JOIN order_ingredient oi ON o.id = oi.order_id
+    LEFT JOIN client c ON c.id = o.client_id 
+    WHERE delivery_status = 'delivered'::public.delivery_status
+      AND created_at > CURRENT_TIMESTAMP - CONCAT(seconds, ' seconds')::INTERVAL AND delivery_status IS NOT NULL
+    ORDER BY count DESC;
+  END
+$function$;
+
+COMMENT ON FUNCTION public.fn_get_best_customer IS 'Retrieves the customer with most ingredients ordered in the last n-seconds, and the number of ingredients';
+
+CREATE OR REPLACE FUNCTION public.fn_get_most_popular_ingredient(seconds INT)
+  RETURNS TABLE(name TEXT, ingredient_id INT, count BIGINT)
+  LANGUAGE plpgsql
+AS $function$
+  BEGIN
+  RETURN QUERY
+    SELECT DISTINCT i.name, oi.ingredient_id, count(oi.ingredient_id) OVER(PARTITION BY oi.ingredient_id)
+    FROM public.order o
+    LEFT JOIN order_ingredient oi ON o.id = oi.order_id
+    LEFT JOIN ingredient i ON i.id = oi.ingredient_id
+    WHERE oi.ingredient_id IS NOT NULL
+      AND created_at > CURRENT_TIMESTAMP - CONCAT(seconds, ' seconds')::INTERVAL AND delivery_status IS NOT NULL
+    ORDER BY count DESC;
+  END
+$function$;
+
+COMMENT ON FUNCTION public.fn_get_best_customer IS 'Retrieves the most popular ingredient in the last n-seconds, and the number of ingredients';
+
+CREATE OR REPLACE FUNCTION public.fn_get_timed_deliveries(seconds INT)
+  RETURNS TABLE(count BIGINT, interval_alias TIMESTAMP)
+  LANGUAGE plpgsql
+AS $function$
+  BEGIN
+  RETURN QUERY
+    SELECT COUNT(*) count, 
+      to_timestamp(floor((extract('epoch' from created_at) / seconds )) * seconds) 
+      AT TIME ZONE 'UTC' as interval_alias
+    FROM public.order GROUP BY interval_alias
+    ORDER BY interval_alias ASC;
+  END
+$function$;
+
+COMMENT ON FUNCTION public.fn_get_timed_deliveries IS 'Retrieves the total number of deliveries recorded grouped by n-seconds intervals';

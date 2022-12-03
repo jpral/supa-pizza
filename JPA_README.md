@@ -8,7 +8,7 @@ I changed `dockerfile` on the frontend folder to `Dockerfile`, as my version of 
 
 I tried running supabase on my home server but some of the Supabase containers kept restarting ([may be related to this?](https://github.com/supabase/cli/issues/33)). It works just fine on a MacBook Air M1.
 
-I used `yarn` to build the frontend.
+I used `yarn` as a package manager on the frontend as opposed to `npm`.
 
 ## Pizza delivery system
 
@@ -20,11 +20,22 @@ Since we use `COMMIT` on the `place_order_runner()` procedure, the actual `place
 
 `fn_process_order()` can be improved, but this version works. In summary:
 - We check for missing dough and ingredients
-- If we we don't have dough or are missing more than two ingredients, we deny the order.
+- If we we don't have dough or are missing more than two ingredients, we deny the order
 - Otherwise, we create a pizza, mark ingredients and dough as used, and deliver the order.
 
+## Frontend
+I used the Supabase CLI to generate TypeScript types from the database, [like so](https://supabase.com/docs/reference/javascript/typescript-support). I created type definitions for `process.env` too.
+
+The way I approached the frontend task was to learn the basics of **Elastic UI**, the **Supabase DB API** and **Supabase Realtime**. Once I had a basic understanding I designed a scaffold with a series of `EuiPanel` components to hold our graphics, KPIs, trends, etc, and our *near-real-time* list of orders. More information on these components later.
+
+Next, I created the following functions in the db:
+- `fn_get_ratio_success_deliveries`: returns the percentage of successful and failed orders in the last n-seconds
+- `fn_get_best_customer`: returns the details of the customer that has eaten the most ingredients in the last n-seconds, and the number of ingredients included in their order
+- `fn_get_most_popular_ingredient`: returns a list of most popular ingredients in the last n-seconds
+- `fn_get_timed_deliveries`: returns the total number of deliveries recorded grouped by n-seconds intervals so we can see the evolution of our business over time.
+
 ## Possible improvements, added features
-- Orders can only include one pizza, we want to make as much money as possible, so we should allow clients to order more than one pizza at the time
-- CMS should allow the boss to open and close the restaurant (make it available for orders or not)
-- CMS could have configurable and sortable slots for graphics and other info.
-- When we deny an order, we don't keep details about the reasons why we denied it, so in order to improve our supply chain, it would be great to have a history of ingredients and doughs that run out of stock and when, so we can adjust accordingly.
+- DB: Orders can only include one pizza, we want to be as profitable and scalable as possible, so we should allow clients to order more than one pizza at the time
+- DB: When we deny an order, we don't keep details about the reasons why we denied it, so in order to improve our supply chain, it would be great to have a history of ingredients and doughs that run out of stock and when, so we can adjust accordingly
+- Frontend: The CMS should allow the boss to open and close the restaurant (make it available or unavailable for orders by changing `backoffice.runner.isActive`) accordingly
+- Frontend: The CMS could have configurable and sortable slots for graphics and other info using Elastic UI's [drag and drop](https://elastic.github.io/eui/#/display/drag-and-drop).
