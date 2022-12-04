@@ -1,19 +1,27 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import reportWebVitals from "./reportWebVitals";
-import { App } from "./sol/App";
+import { App } from "./App";
 
 import "@elastic/eui/dist/eui_theme_light.css";
+import "@elastic/charts/dist/theme_light.css";
 
 import { EuiProvider } from "@elastic/eui";
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+
+// Using react-query for the components that interact with Supabase's Postgres API
+const queryClient = new QueryClient();
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
+
 root.render(
-  <EuiProvider colorMode="light">
-    <App />
-  </EuiProvider>
+  <QueryClientProvider client={queryClient}>
+    <EuiProvider colorMode="light">
+      <App />
+    </EuiProvider>
+  </QueryClientProvider>
 );
 
 // If you want to start measuring performance in your app, pass a function

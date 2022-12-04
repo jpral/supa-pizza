@@ -34,6 +34,8 @@ Next, I created the following functions in the db:
 - `fn_get_most_popular_ingredient`: returns a list of most popular ingredients in the last n-seconds
 - `fn_get_timed_deliveries`: returns the total number of deliveries recorded grouped by n-seconds intervals so we can see the evolution of our business over time.
 
+I added the TS type definitions for the functions from the database to `database.d.ts` file. I used `react-query` for data fetching from supabase's API. I setup a default re-fetching rate of 10 seconds for the non-realtime data points (successful orders, best customer, most popular ingredients). The datagrid with the live stream of orders will connect to socket so ideally I will also integrate it with react-query [as explained here](https://tkdodo.eu/blog/using-web-sockets-with-react-query). 
+
 ## Possible improvements, added features
 - DB: Orders can only include one pizza, we want to be as profitable and scalable as possible, so we should allow clients to order more than one pizza at the time
 - DB: When we deny an order, we don't keep details about the reasons why we denied it, so in order to improve our supply chain, it would be great to have a history of ingredients and doughs that run out of stock and when, so we can adjust accordingly

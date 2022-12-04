@@ -84,8 +84,8 @@ export interface Database {
           pizza_id?: number | null
           delivered_at?: string | null
           delivery_status?:
-            | Database["public"]["Enums"]["delivery_status"]
-            | null
+          | Database["public"]["Enums"]["delivery_status"]
+          | null
           created_at?: string | null
           id?: never
         }
@@ -94,8 +94,8 @@ export interface Database {
           pizza_id?: number | null
           delivered_at?: string | null
           delivery_status?:
-            | Database["public"]["Enums"]["delivery_status"]
-            | null
+          | Database["public"]["Enums"]["delivery_status"]
+          | null
           created_at?: string | null
           id?: never
         }
@@ -187,7 +187,30 @@ export interface Database {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      fn_get_best_customer: {
+        Args: { seconds: number }
+        Returns: {
+          name: string
+          surname: string
+          client_id: number
+          count: number
+        }
+      }
+      fn_get_most_popular_ingredient: {
+        Args: { seconds: number }
+        Returns: { name: string; ingredient_id: number; count: number }
+      }
+      fn_get_ratio_success_deliveries: {
+        Args: { seconds: number }
+        Returns: {
+          delivery_status: Database["public"]["Enums"]["delivery_status"]
+          percent: number
+        }
+      }
+      fn_get_timed_deliveries: {
+        Args: { seconds: number }
+        Returns: { count: number; interval_alias: string }
+      }
     }
     Enums: {
       delivery_status: "delivered" | "not delivered"

@@ -1,39 +1,45 @@
-import LOGO from "./assets/piza-logo.png";
-import {
-  EuiEmptyPrompt,
-  EuiLink,
-  EuiPageTemplate,
-  EuiTitle,
-  EuiImage,
-} from "@elastic/eui";
+import { EuiFlexGroup, EuiFlexItem, EuiPage, EuiPanel } from '@elastic/eui';
+
+import { Header } from './components/Header';
+import { Trend } from './components/Trend'
+import { OrderRatio } from './components/OrderRatio';
+import { HappiestBelly } from './components/HappiestBelly';
+import { PopularIngredients } from './components/PopularIngredients';
+import { OrderGrid } from './components/OrderGrid';
 
 export const App = () => {
-  return (
-    <EuiPageTemplate>
-      <EuiPageTemplate.EmptyPrompt
-        title={<EuiImage src={LOGO} alt="piza logo" size="l" />}
-      >
-        <EuiEmptyPrompt
-          body={
-            <EuiTitle>
-              <p>Welcome to the Piza™ frontend application bootstrap</p>
-            </EuiTitle>
-          }
-          footer={
-            <>
-              <EuiTitle size="xxs">
-                <h4>Ready for the challenge?</h4>
-              </EuiTitle>
-              <EuiLink
-                href="https://github.com/prgueza/piza-supabase"
-                target="_blank"
-              >
-                Read the instructions
-              </EuiLink>
-            </>
-          }
-        />
-      </EuiPageTemplate.EmptyPrompt>
-    </EuiPageTemplate>
-  );
+  return (<>
+    <Header />
+    <EuiPage paddingSize='m'>
+
+      <EuiFlexGroup wrap style={{ width: '100%' }}>
+        <EuiFlexItem>
+          <EuiPanel>
+            <OrderRatio />
+          </EuiPanel>
+        </EuiFlexItem>
+        <EuiFlexItem>
+          <EuiPanel>
+            <HappiestBelly />
+          </EuiPanel>
+        </EuiFlexItem>
+        <EuiFlexItem>
+          <EuiPanel>
+            <PopularIngredients />
+          </EuiPanel>
+        </EuiFlexItem>
+        <EuiFlexItem style={{ minWidth: '100%' }}>
+          <EuiPanel>
+            <Trend />
+          </EuiPanel>
+        </EuiFlexItem>
+        <EuiFlexItem style={{ minWidth: '100%' }}>
+          <EuiPanel>
+            <OrderGrid />
+          </EuiPanel>
+        </EuiFlexItem>
+      </EuiFlexGroup>
+    </EuiPage>
+  </>
+  )
 };

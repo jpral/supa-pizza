@@ -84,10 +84,10 @@ CREATE OR REPLACE FUNCTION public.fn_get_ratio_success_deliveries(seconds INT)
 AS $function$
   BEGIN
   RETURN QUERY
-    SELECT delivery_status, round(count(created_at) * 100 / sum(count(*)) OVER (), 2) AS percent
-    FROM public.order
-    WHERE created_at > CURRENT_TIMESTAMP - CONCAT(seconds, ' seconds')::INTERVAL AND delivery_status IS NOT NULL
-    GROUP BY delivery_status;
+    SELECT o.delivery_status, round(count(created_at) * 100 / sum(count(*)) OVER (), 2) AS percent
+    FROM public.order o
+    WHERE created_at > CURRENT_TIMESTAMP - CONCAT(seconds, ' seconds')::INTERVAL AND o.delivery_status IS NOT NULL
+    GROUP BY o.delivery_status;
   END
 $function$;
 
