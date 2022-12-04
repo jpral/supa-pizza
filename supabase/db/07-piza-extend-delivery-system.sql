@@ -1,4 +1,8 @@
 /* EXTEND DELIVERY SYSTEM */
+
+/* Add a flag that will be updated by fn_process_order depending on ingredient availability */
+ALTER TABLE "public"."order" ADD COLUMN "perfect_pizza" BOOLEAN;
+
 CREATE OR REPLACE FUNCTION public.fn_process_order()
   RETURNS trigger
   LANGUAGE plpgsql
@@ -36,7 +40,7 @@ AS $function$
       -- Otherwise, create the pizza 
       INSERT INTO pizza DEFAULT VALUES RETURNING pizza.id INTO _pizza_id;
         
-      -- Mark dough as used 	
+      -- Mark dough as used
       UPDATE stock_dough SET pizza_id = _pizza_id WHERE id IN(  
         SELECT DISTINCT ON (sd.dough_id) sd.id 
         FROM order_dough od 
@@ -52,7 +56,12 @@ AS $function$
 
       -- Deliver pizza
       UPDATE public.order 
-      SET delivery_status = 'delivered'::public.delivery_status, pizza_id = _pizza_id 
+      SET delivery_status = 'delivered'::public.delivery_status,
+        pizza_id = _pizza_id,
+        perfect_pizza = 
+          CASE WHEN(_missing_ingredients = 0) THEN TRUE
+            ELSE NULL
+          END
       WHERE id = NEW.id;
       
       RAISE NOTICE 'The order with id % has been fulfilled', NEW.id;
@@ -79,19 +88,25 @@ ALTER PUBLICATION supabase_realtime ADD TABLE public.order;
 /* FUNCTIONS to feed the frontend components. */
 
 CREATE OR REPLACE FUNCTION public.fn_get_ratio_success_deliveries(seconds INT)
-  RETURNS TABLE(delivery_status public.delivery_status, percent DECIMAL)
+  RETURNS TABLE(label TEXT, delivery_status public.delivery_status, percent DECIMAL)
   LANGUAGE plpgsql
 AS $function$
   BEGIN
   RETURN QUERY
-    SELECT o.delivery_status, round(count(created_at) * 100 / sum(count(*)) OVER (), 2) AS percent
+    SELECT
+      CASE WHEN(o.delivery_status = 'not delivered'::public.delivery_status) THEN 'fail'
+        WHEN(o.delivery_status = 'delivered'::public.delivery_status) AND (perfect_pizza = TRUE) THEN 'perfect' 
+        WHEN(o.delivery_status = 'delivered'::public.delivery_status) AND (perfect_pizza IS NULL) THEN 'good'
+    	  ELSE NULL
+    	END AS label, 
+      o.perfect_pizza, o.delivery_status, round(count(created_at) * 100 / sum(count(*)) OVER (), 2) AS percent
     FROM public.order o
     WHERE created_at > CURRENT_TIMESTAMP - CONCAT(seconds, ' seconds')::INTERVAL AND o.delivery_status IS NOT NULL
-    GROUP BY o.delivery_status;
+    GROUP BY o.delivery_status, o.perfect_pizza;
   END
 $function$;
 
-COMMENT ON FUNCTION public.fn_get_ratio_success_deliveries IS 'Retrieves the percentage of successful and failed deliveries in the last n-seconds';
+COMMENT ON FUNCTION public.fn_get_ratio_success_deliveries IS 'Retrieves the percentage of perfect, good and failed deliveries in the last n-seconds';
 
 CREATE OR REPLACE FUNCTION public.fn_get_best_customer(seconds INT)
   RETURNS TABLE(name TEXT, surname TEXT, client_id INT, count BIGINT)

@@ -23,6 +23,6 @@ export const OrderRatio = () => {
 
   return <>
     <EuiTitle size='xs'><h3>Order ratio</h3></EuiTitle>
-    {data && data.map((v, i) => <p key={i}>{v.delivery_status}: {v.percent}%</p>)}
+    {data && data.map((v, i) => <p key={i}>{v.label}: {v.percent}%</p>)}
   </>
 }

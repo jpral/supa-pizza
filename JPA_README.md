@@ -38,6 +38,8 @@ I added the TS type definitions for the functions from the database to `database
 
 For the datagrid, I populate the grid with the latest 50 records, if any, and add new ones through the realtime API when their `delivery_status` is updated. Initially I wanted to create a view in Postgres to retrieve all joint details from client, ingredients and dough tables, but that won't work with the realtime API, as I cannot add a VIEW to the `supabase_realtime publication`. Because of time constraints, I've chosen to query only the order data for now, and work on the on demand data fetching for client and pizza details later.
 
+I realised for the first metric we should show good and perfect pizzas, not successful and denied deliveries. Added a flag to the `public.order` that will be updated by `fn_process_order()` depending on how many of the ingredients we've used on each pizza. Modified the `fn_get_ratio_success_deliveries()` function to retrieve the stats based on the new flag, including percentages for **perfect**, **good**, and **failed** pizzas.
+
 ## Possible improvements, added features
 - DB: Orders can only include one pizza, we want to be as profitable and scalable as possible, so we should allow clients to order more than one pizza at the time
 - DB: When we deny an order, we don't keep details about the reasons why we denied it, so in order to improve our supply chain, it would be great to have a history of ingredients and doughs that run out of stock and when, so we can adjust accordingly

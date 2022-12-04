@@ -73,6 +73,7 @@ export interface Database {
       order: {
         Row: {
           client_id: number
+          perfect_pizza: boolean
           pizza_id: number | null
           delivered_at: string | null
           delivery_status: Database["public"]["Enums"]["delivery_status"] | null
@@ -81,6 +82,7 @@ export interface Database {
         }
         Insert: {
           client_id: number
+          perfect_pizza?: boolean
           pizza_id?: number | null
           delivered_at?: string | null
           delivery_status?:
@@ -91,6 +93,7 @@ export interface Database {
         }
         Update: {
           client_id?: number
+          perfect_pizza?: boolean
           pizza_id?: number | null
           delivered_at?: string | null
           delivery_status?:
@@ -203,6 +206,7 @@ export interface Database {
       fn_get_ratio_success_deliveries: {
         Args: { seconds: number }
         Returns: {
+          label: Database["public"]["Enums"]["delivery_label"]
           delivery_status: Database["public"]["Enums"]["delivery_status"]
           percent: number
         }
@@ -213,6 +217,7 @@ export interface Database {
       }
     }
     Enums: {
+      delivery_label: "perfect" | "good" | "fail"
       delivery_status: "delivered" | "not delivered"
     }
   }
