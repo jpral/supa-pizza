@@ -24,8 +24,8 @@ export const Trend = () => {
     return <EuiEmptyPrompt icon={<EuiLoadingSpinner size="m" />} />;
   }
 
-  return (
-    <Chart {...charProps}>
+  return (<>
+    {data && <Chart {...charProps}>
       <Settings />
       <Axis id="cnt" title="count" position={Position.Left} />
       <Axis id="interval_alias" title="Date" position={Position.Bottom} showGridLines />
@@ -35,8 +35,9 @@ export const Trend = () => {
         xScaleType={ScaleType.Time}
         xAccessor="interval_alias"
         yAccessors={["count"]}
-        data={data!}
+        data={data}
       />
-    </Chart>
+    </Chart>}
+  </>
   )
 }

@@ -1,6 +1,6 @@
 ## Javi Prieto's notes on the technical assignment for IOMED's full-stack developer position
 
-On top of my commit messages, I will be adding some notes below that may be useful to understand my process.
+On top of my commit messages, I will be adding some notes below that may be useful to understand my process. The structure of this document is generally linear, meaning I mostly add my thoughts as I work through the assignment. The main exception is the "**Possible improvements, added features**" section, in which I include at any time ideas or changes that I'd like to implement if I had time.
 
 ## System setup
 
@@ -34,7 +34,9 @@ Next, I created the following functions in the db:
 - `fn_get_most_popular_ingredient`: returns a list of most popular ingredients in the last n-seconds
 - `fn_get_timed_deliveries`: returns the total number of deliveries recorded grouped by n-seconds intervals so we can see the evolution of our business over time.
 
-I added the TS type definitions for the functions from the database to `database.d.ts` file. I used `react-query` for data fetching from supabase's API. I setup a default re-fetching rate of 10 seconds for the non-realtime data points (successful orders, best customer, most popular ingredients). The datagrid with the live stream of orders will connect to socket so ideally I will also integrate it with react-query [as explained here](https://tkdodo.eu/blog/using-web-sockets-with-react-query). 
+I added the TS type definitions for the functions from the database to `database.d.ts` file. I used `react-query` for data fetching from supabase's API. I setup a default re-fetching rate of 10 seconds for the non-realtime data points (successful orders, best customer, most popular ingredients). The datagrid with the live stream of orders will connect to socket so ideally I will also integrate it with react-query [as discussed here](https://github.com/TanStack/query/issues/171). 
+
+For the datagrid, I populate the grid with the latest 50 records, if any, and add new ones through the realtime API when their `delivery_status` is updated. Initially I wanted to create a view in Postgres to retrieve all joint details from client, ingredients and dough tables, but that won't work with the realtime API, as I cannot add a VIEW to the `supabase_realtime publication`. Because of time constraints, I've chosen to query only the order data for now, and work on the on demand data fetching for client and pizza details later.
 
 ## Possible improvements, added features
 - DB: Orders can only include one pizza, we want to be as profitable and scalable as possible, so we should allow clients to order more than one pizza at the time
