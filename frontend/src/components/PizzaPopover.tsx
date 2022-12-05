@@ -40,6 +40,7 @@ export const PizzaPopover = ({ id }: { id: number }) => {
           iconType={Pizza}
           iconSide="right"
           onClick={onButtonClick}
+          textProps={{ style: { margin: 0 } }}
         />
       }
       isOpen={isPopoverOpen}

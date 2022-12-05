@@ -42,7 +42,7 @@ I realised for the first metric we should show good and perfect pizzas, not succ
 
 I fine-tunned the time series area chart so it can have `xScaleType={ScaleType.Time}`, I was returning the wrong format from the database.
 
-I created two *PopOver* components that fetch the client and pizza data on demand based on the order_id of the current row in which they're opened.
+I created two *PopOver* components that fetch the client and pizza data on demand based on the order_id of the current row in which they're opened. I fixed some style issues with the PopOver icons. I am also trying to include `setCellProps` in the dataGrid's `renderCellValue` function to highlight certain rows accordingly, but the docs imply I should call it within a `useEffect` hook, which should not be allowed - hooks can only be called from other hooks or function components, not callbacks.
 
 ## Possible improvements, added features
 - DB: Orders can only include one pizza, we want to be as profitable and scalable as possible, so we should allow clients to order more than one pizza at the time

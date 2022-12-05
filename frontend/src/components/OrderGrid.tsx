@@ -79,7 +79,7 @@ export const OrderGrid = () => {
         ]}
         trailingControlColumns={[{
           id: 'actions',
-          width: 100,
+          width: 80,
           headerCellRender: () => (
             <EuiScreenReaderOnly><span>Controls</span></EuiScreenReaderOnly>
           ),

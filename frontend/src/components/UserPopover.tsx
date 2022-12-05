@@ -33,6 +33,7 @@ export const UserPopover = ({ id }: { id: number }) => {
           iconType={User}
           iconSide="right"
           onClick={onButtonClick}
+          textProps={{ style: { margin: 0 } }}
         />
       }
       isOpen={isPopoverOpen}
