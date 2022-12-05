@@ -42,6 +42,8 @@ I realised for the first metric we should show good and perfect pizzas, not succ
 
 I fine-tunned the time series area chart so it can have `xScaleType={ScaleType.Time}`, I was returning the wrong format from the database.
 
+I created two *PopOver* components that fetch the client and pizza data on demand based on the order_id of the current row in which they're opened.
+
 ## Possible improvements, added features
 - DB: Orders can only include one pizza, we want to be as profitable and scalable as possible, so we should allow clients to order more than one pizza at the time
 - DB: When we deny an order, we don't keep details about the reasons why we denied it, so in order to improve our supply chain, it would be great to have a history of ingredients and doughs that run out of stock and when, so we can adjust accordingly

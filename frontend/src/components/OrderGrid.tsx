@@ -3,7 +3,9 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { Database } from '../types/database';
 import { supabase } from '../utils/supabase';
-import { EuiButtonIcon, EuiDataGrid, EuiEmptyPrompt, EuiLoadingSpinner, EuiScreenReaderOnly } from '@elastic/eui';
+import { EuiDataGrid, EuiEmptyPrompt, EuiLoadingSpinner, EuiScreenReaderOnly } from '@elastic/eui';
+import { PizzaPopover } from '../components/PizzaPopover';
+import { UserPopover } from './UserPopover';
 
 export const OrderGrid = () => {
 
@@ -61,7 +63,7 @@ export const OrderGrid = () => {
     }
     {data &&
       <EuiDataGrid
-        height={500}
+        height={250}
         pagination={{
           ...pagination,
           pageSizeOptions: [10, 50, 100],
@@ -77,7 +79,7 @@ export const OrderGrid = () => {
         ]}
         trailingControlColumns={[{
           id: 'actions',
-          width: 80,
+          width: 100,
           headerCellRender: () => (
             <EuiScreenReaderOnly><span>Controls</span></EuiScreenReaderOnly>
           ),
@@ -85,16 +87,8 @@ export const OrderGrid = () => {
 
             return (
               <>
-                <EuiButtonIcon
-                  aria-label="User data"
-                  iconType="user"
-                  color="text"
-                  onClick={() => alert('fetch-user-data TODO!')} />
-                <EuiButtonIcon
-                  aria-label="Pizza details"
-                  iconType="layers"
-                  color="text"
-                  onClick={() => alert('fetch-pizza-data TODO!')} />
+                <PizzaPopover id={data[rowIndex].id} />
+                <UserPopover id={data[rowIndex].id} />
               </>
             )
           }

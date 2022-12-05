@@ -99,7 +99,7 @@ AS $function$
         WHEN(o.delivery_status = 'delivered'::public.delivery_status) AND (perfect_pizza IS NULL) THEN 'good'
     	  ELSE NULL
     	END AS label, 
-      o.perfect_pizza, o.delivery_status, round(count(created_at) * 100 / sum(count(*)) OVER (), 2) AS percent
+      o.delivery_status, round(count(created_at) * 100 / sum(count(*)) OVER (), 2) AS percent
     FROM public.order o
     WHERE created_at > CURRENT_TIMESTAMP - CONCAT(seconds, ' seconds')::INTERVAL AND o.delivery_status IS NOT NULL
     GROUP BY o.delivery_status, o.perfect_pizza;
