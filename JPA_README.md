@@ -40,6 +40,8 @@ For the datagrid, I populate the grid with the latest 50 records, if any, and ad
 
 I realised for the first metric we should show good and perfect pizzas, not successful and denied deliveries. Added a flag to the `public.order` that will be updated by `fn_process_order()` depending on how many of the ingredients we've used on each pizza. Modified the `fn_get_ratio_success_deliveries()` function to retrieve the stats based on the new flag, including percentages for **perfect**, **good**, and **failed** pizzas.
 
+I fine-tunned the time series area chart so it can have `xScaleType={ScaleType.Time}`, I was returning the wrong format from the database.
+
 ## Possible improvements, added features
 - DB: Orders can only include one pizza, we want to be as profitable and scalable as possible, so we should allow clients to order more than one pizza at the time
 - DB: When we deny an order, we don't keep details about the reasons why we denied it, so in order to improve our supply chain, it would be great to have a history of ingredients and doughs that run out of stock and when, so we can adjust accordingly

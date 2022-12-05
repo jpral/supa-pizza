@@ -27,14 +27,23 @@ export const Trend = () => {
   return (<>
     {data && <Chart {...charProps}>
       <Settings />
-      <Axis id="cnt" title="count" position={Position.Left} />
-      <Axis id="interval_alias" title="Date" position={Position.Bottom} showGridLines />
+      <Axis id="cnt" title="Orders" position={Position.Left} />
+      <Axis
+        id="interval_alias"
+        title="Date"
+        position={Position.Bottom}
+        showGridLines
+        tickFormat={(t) => new Intl.DateTimeFormat('en-GB', { dateStyle: 'short', timeStyle: 'long' }).format(new Date(t * 1000))}
+        labelFormat={(t) => new Intl.DateTimeFormat('en-GB', { dateStyle: 'short', timeStyle: 'long' }).format(new Date(t * 1000))}
+      />
       <AreaSeries
         id="area"
         name="Orders"
         xScaleType={ScaleType.Time}
+        yScaleType={ScaleType.Linear}
         xAccessor="interval_alias"
         yAccessors={["count"]}
+
         data={data}
       />
     </Chart>}

@@ -145,14 +145,14 @@ $function$;
 COMMENT ON FUNCTION public.fn_get_best_customer IS 'Retrieves the most popular ingredient in the last n-seconds, and the number of ingredients';
 
 CREATE OR REPLACE FUNCTION public.fn_get_timed_deliveries(seconds INT)
-  RETURNS TABLE(count BIGINT, interval_alias TIMESTAMP)
+  RETURNS TABLE(count BIGINT, interval_alias NUMERIC)
   LANGUAGE plpgsql
 AS $function$
   BEGIN
   RETURN QUERY
     SELECT COUNT(*) count, 
-      to_timestamp(floor((extract('epoch' from created_at) / seconds )) * seconds) 
-      AT TIME ZONE 'UTC' as interval_alias
+      extract('epoch' from to_timestamp(floor((extract('epoch' from created_at) / seconds )) * seconds) 
+      AT TIME ZONE 'UTC') as interval_alias
     FROM public.order GROUP BY interval_alias
     ORDER BY interval_alias ASC;
   END

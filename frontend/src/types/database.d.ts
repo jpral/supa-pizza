@@ -213,7 +213,7 @@ export interface Database {
       }
       fn_get_timed_deliveries: {
         Args: { seconds: number }
-        Returns: { count: number; interval_alias: string }
+        Returns: { count: number; interval_alias: number }
       }
     }
     Enums: {
