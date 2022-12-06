@@ -3,12 +3,14 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { Database } from '../types/database';
 import { supabase } from '../utils/supabase';
-import { EuiDataGrid, EuiEmptyPrompt, EuiLoadingSpinner, EuiScreenReaderOnly } from '@elastic/eui';
+import { EuiDataGrid, EuiEmptyPrompt, EuiLoadingSpinner, EuiScreenReaderOnly, EuiText, EuiTitle, useEuiTheme } from '@elastic/eui';
 import { PizzaPopover } from '../components/PizzaPopover';
 import { UserPopover } from './UserPopover';
+import { useCustomStyle } from '../hooks/useCustomStyle';
 
 export const OrderGrid = () => {
-
+  const { euiTheme } = useEuiTheme();
+  const { titleStyle, subtitleStyle } = useCustomStyle();
   type Order = Database['public']['Tables']['order']['Row'];
 
   // Initial data fetch, first 50 records
@@ -61,7 +63,11 @@ export const OrderGrid = () => {
       <EuiEmptyPrompt icon={<EuiLoadingSpinner size="m" />}>
       </EuiEmptyPrompt>
     }
-    {data &&
+    {data && <>
+      <div style={{ marginBottom: euiTheme.size.s }}>
+        <EuiTitle css={titleStyle}><h3>Live feed</h3></EuiTitle>
+        <EuiText css={subtitleStyle}><span>Keep an eye on all the new orders as they come</span></EuiText>
+      </div>
       <EuiDataGrid
         height={250}
         pagination={{
@@ -104,7 +110,7 @@ export const OrderGrid = () => {
           }
           return data[rowIndex][columnId as keyof Order];
         }}
-      />}
+      /></>}
 
   </>
   )

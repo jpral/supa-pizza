@@ -13,27 +13,27 @@ export const App = () => {
     <EuiPage paddingSize='m'>
 
       <EuiFlexGroup wrap style={{ width: '100%' }}>
-        <EuiFlexItem>
+        <EuiFlexItem style={{ minWidth: '30%' }}>
           <EuiPanel hasShadow={false} hasBorder={true}>
             <OrderRatio />
           </EuiPanel>
         </EuiFlexItem>
-        <EuiFlexItem>
+        <EuiFlexItem style={{ minWidth: '30%' }}>
           <EuiPanel hasShadow={false} hasBorder={true}>
             <HappiestBelly />
           </EuiPanel>
         </EuiFlexItem>
-        <EuiFlexItem>
+        <EuiFlexItem style={{ minWidth: '30%' }}>
           <EuiPanel hasShadow={false} hasBorder={true}>
             <PopularIngredients />
           </EuiPanel>
         </EuiFlexItem>
-        <EuiFlexItem style={{ minWidth: '100%' }}>
+        <EuiFlexItem>
           <EuiPanel hasShadow={false} hasBorder={true}>
             <Trend />
           </EuiPanel>
         </EuiFlexItem>
-        <EuiFlexItem style={{ minWidth: '100%' }}>
+        <EuiFlexItem>
           <EuiPanel hasShadow={false} hasBorder={true}>
             <OrderGrid />
           </EuiPanel>

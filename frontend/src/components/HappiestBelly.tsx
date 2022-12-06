@@ -9,7 +9,7 @@ export const HappiestBelly = () => {
   const { euiTheme } = useEuiTheme();
   const { titleStyle, subtitleStyle, numberStyle } = useCustomStyle();
 
-  const TIME_WINDOW_SECONDS = 1200000;
+  const TIME_WINDOW_SECONDS = 300;
   type ResponseCustomer = Database['public']['Functions']['fn_get_best_customer']['Returns'];
 
   const { isLoading, data } = useQuery<ResponseCustomer[], Error>(['best_customer'], async () => {
@@ -18,7 +18,7 @@ export const HappiestBelly = () => {
       throw error;
     }
     return data as ResponseCustomer[];
-  }, { refetchInterval: 100000 })
+  }, { refetchInterval: 10000 })
 
   if (isLoading) {
     return <EuiEmptyPrompt icon={<EuiLoadingSpinner size="m" />} />;
@@ -42,7 +42,7 @@ export const HappiestBelly = () => {
           }
         </div>
       </EuiFlexItem>
-      <EuiFlexItem style={{ alignItems: 'center', height: '150px', justifyContent: 'center', borderRadius: euiTheme.size.xs, backgroundColor: euiTheme.colors.lightestShade }}>
+      <EuiFlexItem style={{ alignItems: 'center', height: '150px', justifyContent: 'center', borderRadius: euiTheme.size.xs }}>
         {(data && data.length > 0) && <>
           <EuiText css={numberStyle}><span>{data[0].count}</span></EuiText>
           <EuiText css={subtitleStyle}><span>Ingredients</span></EuiText>

@@ -12,7 +12,7 @@ export const OrderRatio = () => {
   const { euiTheme } = useEuiTheme();
   const { chartColors, titleStyle, subtitleStyle, numberStyle, taglineStyle } = useCustomStyle();
 
-  const TIME_WINDOW_SECONDS = 1200000;
+  const TIME_WINDOW_SECONDS = 120;
 
   type ResponseOrder = Database['public']['Functions']['fn_get_ratio_success_deliveries']['Returns'];
 

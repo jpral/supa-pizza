@@ -46,6 +46,8 @@ I created two *PopOver* components that fetch the client and pizza data on deman
 
 I designed a basic version of the frontend panels in figma and I created a `useCustomStyle` hook to retrieve my custom styles that are partially based on `useEuiTheme`. I fitted the first (success-rate) panel with the styles and a donut chart. I modified the database function slightly to include the counts as well as the percentages.
 
+I added best customer and popular ingredients panels next, as well as polishing details across the site. The use of a series of color shades for the graphics and consistent typography for common elements give the site a more cohesive vibe.  
+
 ## Possible improvements, added features
 - DB: Orders can only include one pizza, we want to be as profitable and scalable as possible, so we should allow clients to order more than one pizza at the time
 - DB: When we deny an order, we don't keep details about the reasons why we denied it, so in order to improve our supply chain, it would be great to have a history of ingredients and doughs that run out of stock and when, so we can adjust accordingly
