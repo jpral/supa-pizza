@@ -31,7 +31,6 @@ export const useCustomStyle = () => {
     ${useEuiFontSize('xs')};
     font-weight: ${euiTheme.font.weight.medium};
     color: ${euiTheme.colors.subduedText};
-    margin-bottom: ${euiTheme.size.s};
   `;
 
   const chartColors = ['#2D3862', '#59499A', '#BBAFEC']

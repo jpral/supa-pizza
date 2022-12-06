@@ -195,6 +195,8 @@ export interface Database {
         Returns: {
           name: string
           surname: string
+          email: string
+          avatar_url: string
           client_id: number
           count: number
         }

@@ -109,12 +109,12 @@ $function$;
 COMMENT ON FUNCTION public.fn_get_ratio_success_deliveries IS 'Retrieves the percentage of perfect, good and failed deliveries in the last n-seconds';
 
 CREATE OR REPLACE FUNCTION public.fn_get_best_customer(seconds INT)
-  RETURNS TABLE(name TEXT, surname TEXT, client_id INT, count BIGINT)
+  RETURNS TABLE(name TEXT, surname TEXT, email TEXT, avatar_url TEXT, client_id INT, count BIGINT)
   LANGUAGE plpgsql
 AS $function$
   BEGIN
   RETURN QUERY
-    SELECT DISTINCT c.name, c.surname, o.client_id, count(o.client_id) OVER (PARTITION BY o.client_id)
+    SELECT DISTINCT c.name, c.surname, c.email, c.avatar_url, o.client_id, count(o.client_id) OVER (PARTITION BY o.client_id)
     FROM public.order o 
     LEFT JOIN order_ingredient oi ON o.id = oi.order_id
     LEFT JOIN client c ON c.id = o.client_id 
