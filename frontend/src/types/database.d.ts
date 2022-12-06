@@ -209,6 +209,7 @@ export interface Database {
           label: Database["public"]["Enums"]["delivery_label"]
           delivery_status: Database["public"]["Enums"]["delivery_status"]
           percent: number
+          ctorder: number
         }
       }
       fn_get_timed_deliveries: {

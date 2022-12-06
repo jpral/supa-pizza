@@ -88,7 +88,7 @@ export const OrderGrid = () => {
             return (
               <>
                 <PizzaPopover id={data[rowIndex].id} />
-                <UserPopover id={data[rowIndex].id} />
+                <UserPopover id={data[rowIndex].client_id} />
               </>
             )
           }

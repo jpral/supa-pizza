@@ -88,7 +88,7 @@ ALTER PUBLICATION supabase_realtime ADD TABLE public.order;
 /* FUNCTIONS to feed the frontend components. */
 
 CREATE OR REPLACE FUNCTION public.fn_get_ratio_success_deliveries(seconds INT)
-  RETURNS TABLE(label TEXT, delivery_status public.delivery_status, percent DECIMAL)
+  RETURNS TABLE(label TEXT, delivery_status public.delivery_status, percent DECIMAL, ctorder BIGINT)
   LANGUAGE plpgsql
 AS $function$
   BEGIN
@@ -99,7 +99,7 @@ AS $function$
         WHEN(o.delivery_status = 'delivered'::public.delivery_status) AND (perfect_pizza IS NULL) THEN 'good'
     	  ELSE NULL
     	END AS label, 
-      o.delivery_status, round(count(created_at) * 100 / sum(count(*)) OVER (), 2) AS percent
+      o.delivery_status, round(count(created_at) * 100 / sum(count(*)) OVER (), 2) AS percent, count(created_at) AS ctorder
     FROM public.order o
     WHERE created_at > CURRENT_TIMESTAMP - CONCAT(seconds, ' seconds')::INTERVAL AND o.delivery_status IS NOT NULL
     GROUP BY o.delivery_status, o.perfect_pizza;

@@ -44,6 +44,8 @@ I fine-tunned the time series area chart so it can have `xScaleType={ScaleType.T
 
 I created two *PopOver* components that fetch the client and pizza data on demand based on the order_id of the current row in which they're opened. I fixed some style issues with the PopOver icons. I am also trying to include `setCellProps` in the dataGrid's `renderCellValue` function to highlight certain rows accordingly, but the docs imply I should call it within a `useEffect` hook, which should not be allowed - hooks can only be called from other hooks or function components, not callbacks.
 
+I designed a basic version of the frontend panels in figma and I created a `useCustomStyle` hook to retrieve my custom styles that are partially based on `useEuiTheme`. I fitted the first (success-rate) panel with the styles and a donut chart. I modified the database function slightly to include the counts as well as the percentages.
+
 ## Possible improvements, added features
 - DB: Orders can only include one pizza, we want to be as profitable and scalable as possible, so we should allow clients to order more than one pizza at the time
 - DB: When we deny an order, we don't keep details about the reasons why we denied it, so in order to improve our supply chain, it would be great to have a history of ingredients and doughs that run out of stock and when, so we can adjust accordingly
