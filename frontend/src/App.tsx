@@ -8,8 +8,10 @@ import { PopularIngredients } from './components/PopularIngredients';
 import { OrderGrid } from './components/OrderGrid';
 import { css } from '@emotion/react';
 import { useCustomStyle } from './hooks/useCustomStyle';
+import { useOwnerData } from './hooks/useOwnerData';
 
 export const App = () => {
+  const { isLoading: ownerLoading, data: ownerData } = useOwnerData();
   const { chartColors } = useCustomStyle();
   const { euiTheme } = useEuiTheme();
 
@@ -40,8 +42,7 @@ export const App = () => {
       <EuiFlexGroup wrap style={{ width: '100%' }}>
         <EuiFlexItem css={heroStyle}>
           <EuiTitle css={greetingStyle}>
-            <h3>Welcome back, Owner
-            </h3>
+            <h3>{ownerLoading ? 'Loading...' : `Welcome back, ${ownerData?.name}`}</h3>
           </EuiTitle>
         </EuiFlexItem>
         <EuiFlexItem style={{ minWidth: '30%' }}>
