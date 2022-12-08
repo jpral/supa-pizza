@@ -34,7 +34,7 @@ export const Trend = () => {
       </div>
       <Chart {...charProps}>
         <Settings />
-        <Axis id="cnt" title="Orders" position={Position.Left} showGridLines />
+        <Axis id="cnt" title="Orders" position={Position.Left} />
         <Axis
           id="interval_alias"
           title="Date"

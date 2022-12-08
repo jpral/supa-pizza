@@ -159,3 +159,51 @@ AS $function$
 $function$;
 
 COMMENT ON FUNCTION public.fn_get_timed_deliveries IS 'Retrieves the total number of deliveries recorded grouped by n-seconds intervals';
+
+CREATE OR REPLACE FUNCTION public.fn_get_stock_items()
+  RETURNS TABLE(id INT, name TEXT, cnt BIGINT, ingredient BOOLEAN)
+  LANGUAGE plpgsql
+AS $function$
+  BEGIN
+  RETURN QUERY
+    SELECT i.id, i.name, count(s.ingredient_id) AS cnt, TRUE AS ingredient
+    FROM ingredient i
+    LEFT JOIN stock_ingredient s ON s.ingredient_id = i.id AND pizza_id IS NULL
+    GROUP BY i.id, s.ingredient_id
+    UNION
+    SELECT d.id, d.name, count(s.dough_id) AS cnt, FALSE AS ingredient
+    FROM dough d LEFT JOIN stock_dough s ON d.id = s.dough_id AND pizza_id IS NULL
+    GROUP BY d.id, s.dough_id
+    ORDER BY ingredient, id;
+  END
+$function$;
+
+COMMENT ON FUNCTION public.fn_get_stock_items IS 'Returns list of dough and ingredient types with their stocks';
+
+CREATE OR REPLACE FUNCTION public.fn_create_single_order(client_id INT, dough_id INT, ingredient_ids INT[])
+  RETURNS INT
+  LANGUAGE plpgsql
+AS $function$
+  DECLARE
+    _order_id INT;
+  BEGIN
+    -- Create the order
+    INSERT INTO public.order (client_id) 
+    VALUES (client_id)
+    RETURNING id INTO _order_id;
+  
+    -- Insert the ordered dough
+    INSERT INTO public.order_dough (order_id, dough_id) 
+    VALUES (_order_id, dough_id);
+  
+    -- Insert the ordered ingredients
+    INSERT INTO public.order_ingredient (order_id, ingredient_id) 
+    SELECT _order_id order_id, UNNEST(ingredient_ids) ingredient_id;
+
+    RAISE NOTICE 'The boss just ordered a pizza! (Dough: %; Ingredients: %)', dough_id, ARRAY_TO_STRING(ingredient_ids, ',');
+	RETURN _order_id;
+  END
+$function$;
+
+COMMENT ON FUNCTION public.fn_create_single_order IS 'Orders a pizza for a client_id, with dough_id and ingredient_ids';
+

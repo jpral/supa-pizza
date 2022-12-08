@@ -190,6 +190,16 @@ export interface Database {
       [_ in never]: never
     }
     Functions: {
+      fn_create_single_order: {
+        Args: {
+          client_id: number
+          dough_id: number
+          ingredient_ids: number[]
+        }
+        Returns: {
+          order_id: number
+        }
+      },
       fn_get_best_customer: {
         Args: { seconds: number }
         Returns: {
@@ -199,6 +209,15 @@ export interface Database {
           avatar_url: string
           client_id: number
           count: number
+        }
+      }
+      fn_get_stock_items: {
+        Args: { [_ in never]: never }
+        Returns: {
+          id: number
+          name: string
+          cnt: number
+          ingredient: boolean
         }
       }
       fn_get_most_popular_ingredient: {

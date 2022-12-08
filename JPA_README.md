@@ -46,10 +46,24 @@ I created two *PopOver* components that fetch the client and pizza data on deman
 
 I designed a basic version of the frontend panels in figma and I created a `useCustomStyle` hook to retrieve my custom styles that are partially based on `useEuiTheme`. I fitted the first (success-rate) panel with the styles and a donut chart. I modified the database function slightly to include the counts as well as the percentages.
 
-I added best customer and popular ingredients panels next, as well as polishing details across the site. The use of a series of color shades for the graphics and consistent typography for common elements give the site a more cohesive vibe.  
+I added best customer and popular ingredients panels next, as well as polishing details across the site. The use of a series of color shades for the graphics and consistent typography for common elements give the site a more cohesive vibe.
 
-## Possible improvements, added features
-- DB: Orders can only include one pizza, we want to be as profitable and scalable as possible, so we should allow clients to order more than one pizza at the time
-- DB: When we deny an order, we don't keep details about the reasons why we denied it, so in order to improve our supply chain, it would be great to have a history of ingredients and doughs that run out of stock and when, so we can adjust accordingly
-- Frontend: The CMS should allow the boss to open and close the restaurant (make it available or unavailable for orders by changing `backoffice.runner.isActive`) accordingly
+The last commit includes a new order placing modal, that disables ingredients and dough that are out of stock. I created a function in the database to search for the stock, and another one to place an order including inserts for `order` `order_dough` and `order_ingredient`.
+
+At the same time I improved the way pizza and user data were being shown in the live feed, as the popovers would close when new orders showed, re-rendering the whole table. I ended up using a not-so-elegant way to show them in a popup that lives outside the grid. I also changed the way I was adding new data to the grid after the initial query, as I should not modify the data directly - using `queryClient.setQueryData(['live_orders'], [newRecord].concat(data));` keep the rest of the data grid aware of the changes, updating the number of pages accordingly. 
+
+## Possible improvements and extra features
+- DB: Orders can only include one pizza, we want to be as profitable and scalable as possible, so we should allow clients to order more than one pizza at the time. The easiest way I could see is add an `order_pizza` pivot table making the relationshp one-to-many (one order can contain many pizzas), and convert `order_dough` and `order_ingredient` into `pizza_dough` and `pizza_ingredient`.
+- DB: When we deny an order, we don't keep details about the reasons why we denied it, so in order to improve our supply chain, it would be great to have a history of ingredients and doughs that run out of stock and when, so we can adjust accordingly. It probably can be queried with the current structure but it's not trivial.
+- DB: I would add a pre-defined pizza list to the database, to show a few pizza options to the customers, instead of having the choose every single ingredient. From the order's perspective, it would not change anything, as a customer choosing a predefined pizza would only make it quicker to add all the selected ingredients and dough to the order.
+- Frontend: The CMS could allow the boss to open and close the restaurant (make it available or unavailable for orders by changing `backoffice.runner.isActive`) accordingly.
 - Frontend: The CMS could have configurable and sortable slots for graphics and other info using Elastic UI's [drag and drop](https://elastic.github.io/eui/#/display/drag-and-drop).
+
+## Stuff that I wish I had done (or done better)
+- Authentication: I just could not get it done in the local docker environment, could not add the user to the supabase system for some reason, but it seemed straight forward enough after that.
+- Better, cleaner component structure. I should have move most queries to hooks, or at least to their own testable components. I struggled a bit with some of the bigger components including charts, a lot of boilerplate necessary and not always the cleaner outcome.
+- Testing, I should include one or two tests at least to show my approach, I got a bit short of time and tried to do everything else. I might add a few after this commit, but I've decided to send the project as-is. This is as much as I was able to do in the week-ish that I was given.
+- Better docs: I hope I was able to comment on most of what I did in a clear way, but I am sure there are some things I took for granted and I could have explained better. 
+
+## Final remarks
+All in all I had good fun, I didn't have previous experience with Supabase or ElasticUI, so it was a good chance for me to learn the basics while running against the clock. I thought the test was very complete: touching DB stuff, APIs, Docker, React, Typescript, Components Libraries, Live data, etc. Well done! And thanks for the opportunity. 
