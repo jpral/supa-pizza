@@ -50,7 +50,11 @@ I added best customer and popular ingredients panels next, as well as polishing 
 
 The last commit includes a new order placing modal, that disables ingredients and dough that are out of stock. I created a function in the database to search for the stock, and another one to place an order including inserts for `order` `order_dough` and `order_ingredient`.
 
-At the same time I improved the way pizza and user data were being shown in the live feed, as the popovers would close when new orders showed, re-rendering the whole table. I ended up using a not-so-elegant way to show them in a popup that lives outside the grid. I also changed the way I was adding new data to the grid after the initial query, as I should not modify the data directly - using `queryClient.setQueryData(['live_orders'], [newRecord].concat(data));` keep the rest of the data grid aware of the changes, updating the number of pages accordingly. 
+At the same time I improved the way pizza and user data were being shown in the live feed, as the popovers would close when new orders showed, re-rendering the whole table. I ended up using a not-so-elegant way to show them in a popup that lives outside the grid. I also changed the way I was adding new data to the grid after the initial query, as I should not modify the data directly - using `queryClient.setQueryData(['live_orders'], [newRecord].concat(data));` keep the rest of the data grid aware of the changes, updating the number of pages accordingly.
+
+**[UPDATE]**: I added some unit testing with **jest** and **nock** for network mocking (we could use MSW instead). I am launching from the terminal using `yarn test --coverage src`. At least I wanted to illustrate how would I go about testing a custom hook with a network call, and a couple of react components. I slightly refactored the `OrderRatio` component to take out the data fetching to a container and make it more testable. 
+
+In terms of coverage, higher ratios indicate that there's more of our code that is tested to behave as expected. There will be more chances for us to catch a bug when refactors happen, and we also can include the use of thresholds to ensure we keep a minimum ratio of tested code. 
 
 ## Possible improvements and extra features
 - DB: Orders can only include one pizza, we want to be as profitable and scalable as possible, so we should allow clients to order more than one pizza at the time. The easiest way I could see is add an `order_pizza` pivot table making the relationshp one-to-many (one order can contain many pizzas), and convert `order_dough` and `order_ingredient` into `pizza_dough` and `pizza_ingredient`.
@@ -62,7 +66,7 @@ At the same time I improved the way pizza and user data were being shown in the 
 ## Stuff that I wish I had done (or done better)
 - Authentication: I just could not get it done in the local docker environment, could not add the user to the supabase system for some reason, but it seemed straight forward enough after that.
 - Better, cleaner component structure. I should have move most queries to hooks, or at least to their own testable components. I struggled a bit with some of the bigger components including charts, a lot of boilerplate necessary and not always the cleaner outcome.
-- Testing, I should include one or two tests at least to show my approach, I got a bit short of time and tried to do everything else. I might add a few after this commit, but I've decided to send the project as-is. This is as much as I was able to do in the week-ish that I was given.
+- Testing, I should include one or two tests at least to show my approach, I got a bit short of time and tried to do everything else. I might add a few after this commit, but I've decided to send the project as-is. This is as much as I was able to do in the week-ish that I was given. **[UPDATE]**: I did include some in the end.
 - Better docs: I hope I was able to comment on most of what I did in a clear way, but I am sure there are some things I took for granted and I could have explained better. 
 
 ## Final remarks

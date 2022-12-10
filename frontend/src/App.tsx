@@ -2,7 +2,7 @@ import { EuiFlexGroup, EuiFlexItem, EuiPage, EuiPanel, EuiTitle, useEuiFontSize,
 
 import { Header } from './components/Header';
 import { Trend } from './components/Trend'
-import { OrderRatio } from './components/OrderRatio';
+import { OrderRatioContainer } from './components/OrderRatioContainer';
 import { HappiestBelly } from './components/HappiestBelly';
 import { PopularIngredients } from './components/PopularIngredients';
 import { OrderGrid } from './components/OrderGrid';
@@ -47,7 +47,7 @@ export const App = () => {
         </EuiFlexItem>
         <EuiFlexItem style={{ minWidth: '30%' }}>
           <EuiPanel hasShadow={false} hasBorder={true}>
-            <OrderRatio />
+            <OrderRatioContainer />
           </EuiPanel>
         </EuiFlexItem>
         <EuiFlexItem style={{ minWidth: '30%' }}>

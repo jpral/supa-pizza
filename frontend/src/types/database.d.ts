@@ -239,7 +239,7 @@ export interface Database {
       }
     }
     Enums: {
-      delivery_label: "perfect" | "good" | "fail"
+      delivery_label: "Perfect" | "Good enough" | "Not delivered"
       delivery_status: "delivered" | "not delivered"
     }
   }

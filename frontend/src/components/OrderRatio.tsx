@@ -1,45 +1,16 @@
-import { EuiEmptyPrompt, EuiFlexGroup, EuiFlexItem, EuiLoadingSpinner, EuiText, EuiTitle, useEuiTheme } from '@elastic/eui';
+import { EuiFlexGroup, EuiFlexItem, EuiText, EuiTitle, useEuiTheme } from '@elastic/eui';
 import { Chart, Datum, Partition, PartitionLayout, Settings } from '@elastic/charts';
 
-import { useQuery } from '@tanstack/react-query';
-
 import { Database } from '../types/database';
-import { supabase } from '../utils/supabase';
-
 import { useCustomStyle } from '../hooks/useCustomStyle';
 
-export const OrderRatio = () => {
+type OrderSuccessType = Database['public']['Functions']['fn_get_ratio_success_deliveries']['Returns'];
+
+export const OrderRatio = ({ orderData }: { orderData: OrderSuccessType[] }) => {
   const { euiTheme } = useEuiTheme();
   const { chartColors, titleStyle, subtitleStyle, numberStyle, taglineStyle } = useCustomStyle();
 
   const TIME_WINDOW_SECONDS = 120;
-
-  type ResponseOrder = Database['public']['Functions']['fn_get_ratio_success_deliveries']['Returns'];
-
-  const { isLoading, data } = useQuery<ResponseOrder[], Error>(['ratio_orders'], async () => {
-    const { data, error } = await supabase.rpc('fn_get_ratio_success_deliveries', { seconds: TIME_WINDOW_SECONDS });
-    if (error) {
-      throw error;
-    }
-
-    return data as ResponseOrder[];
-  }, { refetchInterval: 10000 })
-
-  // Defaults in case no perfect orders are found
-  const parseData = () => {
-    if (!data || !data.length) return { percentPerfect: 0, countPerfect: 0, countTotal: 0 }
-    const perfect = data.find(el => el.label === 'perfect');
-    const percentPerfect = perfect?.percent || 0;
-    const countPerfect = perfect?.ctorder || 0;
-    const countTotal = data.reduce((acc, current) => acc + current.ctorder, 0);
-    return { percentPerfect, countPerfect, countTotal }
-  }
-
-  const parsedData = parseData();
-
-  if (isLoading) {
-    return <EuiEmptyPrompt icon={<EuiLoadingSpinner size="m" />} />;
-  }
 
   return (
     <EuiFlexGroup wrap style={{ justifyContent: 'space-between' }}>
@@ -49,8 +20,17 @@ export const OrderRatio = () => {
           <EuiText css={subtitleStyle}><span>Ratio of perfect / good pizzas in the last {TIME_WINDOW_SECONDS / 60} minutes</span></EuiText>
         </div>
         <div>
-          <EuiText css={numberStyle}><span>{Math.round(parsedData.percentPerfect)}%</span></EuiText>
-          <EuiText css={taglineStyle}><span>{parsedData.countPerfect} perfect deliveries of {parsedData.countTotal} orders</span></EuiText>
+          {orderData.length ?
+            <>
+              <EuiText css={numberStyle}><span>{Math.round((orderData.filter(c => c.label === 'Perfect')[0].percent))}%</span></EuiText>
+              <EuiText css={taglineStyle}><span>{orderData.filter(c => c.label === 'Perfect')[0].ctorder} perfect deliveries of {orderData.reduce((prev, r) => prev + r.ctorder, 0)} orders</span></EuiText>
+            </>
+            :
+            <>
+              <EuiText css={numberStyle}><span>0%</span></EuiText>
+              <EuiText css={taglineStyle}><span>No orders found</span></EuiText>
+            </>
+          }
         </div>
       </EuiFlexItem>
       <EuiFlexItem style={{ flexBasis: '120px' }}>
@@ -71,20 +51,13 @@ export const OrderRatio = () => {
           />
           <Partition
             id="success_rate_chart"
-            data={data ? data : []}
+            data={orderData}
             layout={PartitionLayout.sunburst}
-            valueAccessor={(d: ResponseOrder) => { return d.ctorder; }}
+            valueAccessor={(d: OrderSuccessType) => d.ctorder}
             valueFormatter={(d: number) => `${d} orders`}
             layers={[{
-              groupByRollup: (d: ResponseOrder) => d.label,
-              nodeLabel: (d: Datum) => {
-                switch (d) {
-                  case 'fail': return 'Not delivered: ';
-                  case 'good': return 'Good enough: ';
-                  case 'perfect': return 'Perfect: ';
-                  default: return '';
-                }
-              },
+              groupByRollup: (d: OrderSuccessType) => d.label,
+              nodeLabel: (d: Datum) => `${d}:`,
               shape: {
                 fillColor: (e) => { return chartColors[e.sortIndex] },
               }

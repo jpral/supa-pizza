@@ -94,9 +94,9 @@ AS $function$
   BEGIN
   RETURN QUERY
     SELECT
-      CASE WHEN(o.delivery_status = 'not delivered'::public.delivery_status) THEN 'fail'
-        WHEN(o.delivery_status = 'delivered'::public.delivery_status) AND (perfect_pizza = TRUE) THEN 'perfect' 
-        WHEN(o.delivery_status = 'delivered'::public.delivery_status) AND (perfect_pizza IS NULL) THEN 'good'
+      CASE WHEN(o.delivery_status = 'not delivered'::public.delivery_status) THEN 'Not delivered'
+        WHEN(o.delivery_status = 'delivered'::public.delivery_status) AND (perfect_pizza = TRUE) THEN 'Perfect' 
+        WHEN(o.delivery_status = 'delivered'::public.delivery_status) AND (perfect_pizza IS NULL) THEN 'Good enough'
     	  ELSE NULL
     	END AS label, 
       o.delivery_status, round(count(created_at) * 100 / sum(count(*)) OVER (), 2) AS percent, count(created_at) AS ctorder
