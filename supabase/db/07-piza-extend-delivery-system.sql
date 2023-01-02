@@ -207,3 +207,6 @@ $function$;
 
 COMMENT ON FUNCTION public.fn_create_single_order IS 'Orders a pizza for a client_id, with dough_id and ingredient_ids';
 
+--- Automatic isert of the user to authenticate the boss. Password: pass123
+INSERT INTO "auth"."users" ("instance_id", "id", "aud", "role", "email", "encrypted_password", "email_confirmed_at", "invited_at", "confirmation_token", "confirmation_sent_at", "recovery_token", "recovery_sent_at", "email_change_token_new", "email_change", "email_change_sent_at", "last_sign_in_at", "raw_app_meta_data", "raw_user_meta_data", "is_super_admin", "created_at", "updated_at", "phone", "phone_confirmed_at", "phone_change", "phone_change_token", "phone_change_sent_at", "email_change_token_current", "email_change_confirm_status", "banned_until", "reauthentication_token", "reauthentication_sent_at") VALUES
+('00000000-0000-0000-0000-000000000000', '9df43447-6105-4f95-8259-cf4641b545ef', 'authenticated', 'authenticated', 'user@email.com', '$2a$10$KDjQdejEnSuGhPKcpy1Xm.nnYu0yp3rO6KePp8orCKtD/tsDfvHGu', '2022-12-11 12:15:47.795878+00', NULL, '', NULL, '', NULL, '', '', NULL, NULL, '{"provider": "email", "providers": ["email"]}', '{"client_id": 1}', 'f', '2022-12-11 12:15:47.761376+00', '2022-12-11 12:15:47.796316+00', NULL, NULL, '', '', NULL, '', 0, NULL, '', NULL);

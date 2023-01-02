@@ -8,7 +8,8 @@ import "@elastic/charts/dist/theme_light.css";
 
 import { EuiProvider } from "@elastic/eui";
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-
+import { AuthProvider } from './utils/auth';
+import { supabase } from './utils/supabase';
 // Using react-query for the components that interact with Supabase's Postgres API
 const queryClient = new QueryClient();
 
@@ -17,11 +18,13 @@ const root = ReactDOM.createRoot(
 );
 
 root.render(
-  <QueryClientProvider client={queryClient}>
-    <EuiProvider colorMode="light">
-      <App />
-    </EuiProvider>
-  </QueryClientProvider>
+  <AuthProvider supabase={supabase}>
+    <QueryClientProvider client={queryClient}>
+      <EuiProvider colorMode="light">
+        <App />
+      </EuiProvider>
+    </QueryClientProvider>
+  </AuthProvider>
 );
 
 // If you want to start measuring performance in your app, pass a function

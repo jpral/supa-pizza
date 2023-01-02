@@ -2,13 +2,15 @@ import { EuiButton, EuiButtonEmpty, EuiForm, EuiFormRow, EuiModal, EuiModalBody,
 import { useMutation } from '@tanstack/react-query';
 import { FormEvent, useCallback, useEffect, useState } from 'react';
 import { useCustomStyle } from '../hooks/useCustomStyle';
-import { useOwnerData } from '../hooks/useOwnerData';
+import { useClientData } from '../hooks/useClientData';
 import { useStockData } from '../hooks/useStockData';
 import { supabase } from '../utils/supabase';
+import { useAuth } from '../utils/auth';
 
 export const ModalForm = () => {
+  const { session } = useAuth();
   const { titleStyle, subtitleStyle } = useCustomStyle();
-  const { data: ownerData } = useOwnerData();
+  const { data: ownerData } = useClientData({ clientId: session?.user.user_metadata.client_id });
   const { data: stockData } = useStockData();
 
   const [isModalVisible, setIsModalVisible] = useState(false);

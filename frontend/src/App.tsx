@@ -8,10 +8,13 @@ import { PopularIngredients } from './components/PopularIngredients';
 import { OrderGrid } from './components/OrderGrid';
 import { css } from '@emotion/react';
 import { useCustomStyle } from './hooks/useCustomStyle';
-import { useOwnerData } from './hooks/useOwnerData';
+import { useClientData } from './hooks/useClientData';
+import { useAuth } from './utils/auth';
+import { Login } from './components/login';
 
 export const App = () => {
-  const { isLoading: ownerLoading, data: ownerData } = useOwnerData();
+  const { session } = useAuth();
+  const { isLoading: ownerLoading, data: ownerData } = useClientData({ clientId: session?.user.user_metadata.client_id });
   const { chartColors } = useCustomStyle();
   const { euiTheme } = useEuiTheme();
 
@@ -35,6 +38,8 @@ export const App = () => {
     background-repeat: no-repeat;
     padding: ${euiTheme.size.l};
   `
+
+  if (!session) return <Login />
 
   return (<>
     <Header />
